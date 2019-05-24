@@ -1,0 +1,57 @@
+app.directive('file', function () {
+	    return {
+	        scope: {
+	            file: '='
+	        },
+	        link: function (scope, el, attrs) {
+	            el.bind('change', function (event) {
+	                var file = event.target.files[0];
+	                scope.file = file ? file : undefined;
+	                scope.$apply();
+	            });
+	        }
+	    };
+	});
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+$http({
+		      method: 'POST',
+		      url: globalData.baseUrl + globalData.springHealthWsUrl + "/kpi/saveExcelsheet",
+		      headers: {
+	                'Content-Type': undefined
+	            },
+	            data: {
+	                email: "Hello@hello",
+	                token: "mY token",
+	                upload: $scope.file
+	            },
+	            transformRequest: function (data, headersGetter) {
+	                var formData = new FormData();
+	                angular.forEach(data, function (value, key) {
+	                    formData.append(key, value);
+	                });
+
+	                var headers = headersGetter();
+	                delete headers['Content-Type'];
+
+	                return formData;
+	            }
+		      
+		   }).then(function (response){
+			   	//console.log(JSON.stringify(response));
+			   	$scope.kpiUploadResult = response.data.sheets;
+			   	$scope.KPImodalBody = false;
+				$scope.KPImodalLoader = false;
+				$scope.KPImodalMessageSS = "File uploaded Sucessfully.";
+		   },function (error){
+			   $scope.KPImodalBody = false;
+			   $scope.KPImodalLoader = false;
+			   $scope.KPImodalMessageER = "File uploaded failed. Please try later";
+			   console.log(JSON.stringify(response));
+		   });
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+<input type="file" file="file" onchange="angular.element(this).scope().validatefile(this)"/>	
